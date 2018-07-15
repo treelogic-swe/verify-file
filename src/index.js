@@ -3,20 +3,10 @@ const prompt = require('prompt');
 const colors = require('colors/safe');
 const fs = require('fs');
 
+const colorsTheme = require('./colorsTheme');
 const getFileInputSchema = require('./file-input-schema');
 
-colors.setTheme({
-  silly: 'rainbow',
-  input: 'grey',
-  verbose: 'cyan',
-  prompt: 'grey',
-  info: 'green',
-  data: 'grey',
-  help: 'cyan',
-  warn: 'yellow',
-  debug: 'blue',
-  error: 'red'
-});
+colors.setTheme(colorsTheme);
 
 prompt.start();
 
