@@ -5,13 +5,24 @@ const fs = require('fs');
 
 const getFileInputSchema = require('./file-input-schema');
 
-prompt.message = colors.yellow('');
+colors.setTheme({
+  silly: 'rainbow',
+  input: 'grey',
+  verbose: 'cyan',
+  prompt: 'grey',
+  info: 'green',
+  data: 'grey',
+  help: 'cyan',
+  warn: 'yellow',
+  debug: 'blue',
+  error: 'red'
+});
 
 prompt.start();
 
 prompt.get(getFileInputSchema(), function (inputError, fileInputResult) {
   if (inputError) {
-    console.error('Error getting input. Nothing to do.', inputError);
+    console.error('Error getting input. \n', inputError);
 
     return;
   }
@@ -23,16 +34,20 @@ prompt.get(getFileInputSchema(), function (inputError, fileInputResult) {
     publicKey = fs.readFileSync(fileInputResult.signatureFileName);
     signedMessage = fs.readFileSync(fileInputResult.targetFileName);
   } catch (fileReadErr) {
-    console.error('Error reading the input files.', fileReadErr);
+    console.error(colors.error('Error reading the input files. \n'), fileReadErr);
+
+    return;
   }
   console.log(publicKey);
   console.log(signedMessage);
 
   try {
     verify(publicKey, signedMessage).then(() => {
-      console.info('The user signed the message');
+      console.info(colors.error('The file is validated. \n'));
+    }).error((verifyError) => {
+      throw verifyError;
     });
   } catch (err) {
-    console.error('The user didn‘t sign the message', err);
+    console.error(colors.error('The file is not valid: It does not match the provided signature. \n'), err);
   }
 });
